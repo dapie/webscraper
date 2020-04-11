@@ -1,25 +1,25 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "manifest_version": 2,
+
+  "name": "WebScraper extension",
+  "description": "This extension helps to web scrap",
+  "version": "0.0.5",
+
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_title": "Open the popup"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "64": "icon64.png",
+    "128": "icon128.png",
+    "192": "icon192.png",
+    "256": "icon256.png"
+  },
+  "content_security_policy": "script-src 'self' 'sha256-XSZoPF6vJhDUU97e1L5IFbyL2hR1oQP9Zsli/Mv6acM='; object-src 'self'",
+  "permissions": [
+    
+  ]
 }
