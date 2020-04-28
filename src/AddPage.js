@@ -106,7 +106,7 @@ class AddPage extends React.Component{
 			hasSelector,
 			hasName
 		})
-		if(hasName)
+		if(hasName && hasSelector)
 			this.props.onAddElement(newAdd)
 	}
 

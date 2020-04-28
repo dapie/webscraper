@@ -3,11 +3,18 @@ let tabID, resArr, selected, dom;
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        console.log(request)
         if( request.message === "start" ) {
             start(request.body);
             tabID = sender.id
+            chrome.runtime.sendMessage({message: "icon", options: { 
+                text: "^", 
+                select: request.body
+            }});
         } else if( request.message === "show" ) {
+            chrome.runtime.sendMessage({message: "icon", options: { 
+                text: "^", 
+                select: false
+            }});
             if(request.body.viewSelected){
                 resArr = request.body.arr
                 selectElements()
@@ -20,8 +27,6 @@ chrome.runtime.onMessage.addListener(
 );
 
 function start(startSelect){
-    // chrome.browserAction.setBadgeBackgroundColor({color: '#222222'});
-    // chrome.browserAction.setBadgeText({text: "^"});
     clearSelected();
     if(startSelect){
         document.onmouseover = (event) => {
@@ -33,6 +38,7 @@ function start(startSelect){
             event.target.classList.remove('hint-mode_show-block');
         }
         document.onclick = (event) => {
+            event.preventDefault();
             event.stopPropagation();
             event.target.classList.remove('hint-mode_show-block');
             addSelectedElement(event.target);
