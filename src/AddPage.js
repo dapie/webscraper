@@ -69,9 +69,10 @@ class AddPage extends React.Component{
 
 	handleSelectClick(){
 		const selectingElements = !this.state.selectingElements
+		const parent = this.state.newAdd.parent
 		chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
 			var activeTab = tabs[0];
-			chrome.tabs.sendMessage(activeTab.id, {"message": "start", "body": selectingElements});
+			chrome.tabs.sendMessage(activeTab.id, {"message": "start", "body": selectingElements, "parent": parent});
 		});
 		this.setState(prevState => ({
 			selectingElements: !prevState.selectingElements,

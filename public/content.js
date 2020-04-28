@@ -1,9 +1,11 @@
 /*global chrome*/
-let tabID, resArr, selected, dom;
+let tabID, resArr, selected = [], dom, parent, firstElement;
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
+        console.log("CONTENT:"+request)
         if( request.message === "start" ) {
+            parent = request.parent
             start(request.body);
             tabID = sender.id
             chrome.runtime.sendMessage({message: "icon", options: { 
@@ -29,17 +31,25 @@ chrome.runtime.onMessage.addListener(
 function start(startSelect){
     clearSelected();
     if(startSelect){
+        if(parent){
+            console.log(parent)
+            firstElement = getFirstElement()
+            console.log(firstElement)
+        }
         document.onmouseover = (event) => {
             event.stopPropagation();
+            if(parent && !firstElement.contains(event.target)) return;
             event.target.classList.add('hint-mode_show-block');
         }
         document.onmouseout = (event) => {
             event.stopPropagation();
+            if(parent && !firstElement.contains(event.target)) return;
             event.target.classList.remove('hint-mode_show-block');
         }
         document.onclick = (event) => {
             event.preventDefault();
             event.stopPropagation();
+            if(parent && !firstElement.contains(event.target)) return;
             event.target.classList.remove('hint-mode_show-block');
             addSelectedElement(event.target);
         }
@@ -48,9 +58,9 @@ function start(startSelect){
         document.onmouseover = undefined
         document.onmouseout = undefined
         document.onclick = undefined
+        parent = undefined
     }
 }
-// content.js
 
 function addSelectedElement(target){
     for(let i = 0; i < selected.length; i++){
@@ -80,6 +90,7 @@ function clearSelected(){
     selected = [];
     for(let i = 0; i < dom.length; i++){
         dom[i].classList.remove('check-mode_show-block');
+        dom[i].classList.remove('check2-mode_show-block');
         dom[i].classList.remove('selected-mode_show-block');
     }
     return false
@@ -88,6 +99,8 @@ function clearSelected(){
 function getParams(el){
     const isSelected = checkInSelected(el)
     if(isSelected) el.classList.remove('selected-mode_show-block')
+    el.classList.remove('check-mode_show-block')
+    el.classList.remove('check2-mode_show-block');
     const params = {
         localName: el.localName,
         id: el.id,
@@ -102,7 +115,6 @@ function getParams(el){
 }
 
 function checkElements(){
-    if(selected.length < 2) return;
     resArr = getParams(selected[0])
 
     for(let i = 1; i < selected.length; i++){
@@ -114,7 +126,7 @@ function checkElements(){
 }
 
 function selectElements(){
-    dom = document.body.getElementsByTagName("*");
+    dom = parent ? getFirstElement().getElementsByTagName("*") : document.body.getElementsByTagName("*");
     let flag = true;
     for(let i = 0; i < dom.length; i++){
         let elemParams = getParams(dom[i])
@@ -125,6 +137,29 @@ function selectElements(){
                 break
             } 
         }
-        if(flag) dom[i].classList.add('check-mode_show-block')
+        if(flag) dom[i].classList.add(parent ? 'check2-mode_show-block' : 'check-mode_show-block')
     }
+}
+
+function getFirstElement(){
+    let parArr = parent.selectArr
+    dom = document.body.getElementsByTagName("*");
+    let firstElement
+    let flag = true
+    for(let i = 0; i < dom.length; i++){
+        let elemParams = getParams(dom[i])
+        flag = true
+        for(let p in parArr){
+            if(parArr[p] !== elemParams[p]){
+                flag = false
+                break
+            } 
+        }
+        if(flag){
+            firstElement = dom[i]
+            dom[i].classList.add('check-mode_show-block')
+            break;
+        }
+    }
+    return firstElement
 }

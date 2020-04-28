@@ -22,61 +22,10 @@
     background-color: rgba(255, 255, 0, 0.1) !important;
 }
 
-.web-scraper.select-tool{
-    width: 300px;
-    height: 40px;
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    background: #FBFCFF;
-    border-radius: 10px;
-    box-shadow: 0px 4px 20px rgba(54, 137, 255, 0.3);
-    display: flex;
+.check2-mode_show-block{
+    outline: rgb(255, 150, 0) solid 2px !important;
 }
 
-.web-scraper.select-tool input{
-    height: 40px;
-    border: none;
-    background: #F1F4FA;
-    border-radius: 10px 0px 0px 10px;
-    color: #1F344A;
-    text-indent: 14px;
-    font-family: "Montserrat", sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    outline: none;
-    flex-grow: 1;
-    padding: 0;
-}
-
-.web-scraper.select-tool .button:hover, 
-.web-scraper.select-tool .button:focus{
-    outline: none;
-}
-
-.web-scraper.select-tool .button:hover{ 
-    background: #D9E9FF;
-    transition: all .3s;
-}
-
-.web-scraper.select-tool .button{
-    font-size: 14px;
-    color: #FFFFFF;
-    text-align: center;
-    font-weight: 500;
-    line-height: 40px;
-    background: #3689FF;
-    box-shadow: 0px 4px 20px rgba(54, 137, 255, 0.4);
-    height: 40px;
-    padding: 0;
-    border: none;
-    border-radius: 0px 10px 10px 0px;
-    cursor: pointer;
-    transition: all .3s;
-    padding: 0px 6px;
-}
-
-.web-scraper.select-tool .button:hover{ 
-    background: #3694FF;
-    box-shadow: 0px 4px 20px rgba(54, 137, 255, 0.7);
+.check2-mode_show-block, .check2-mode_show-block *{
+    background-color: rgba(255, 150, 0, 0.1) !important;
 }
