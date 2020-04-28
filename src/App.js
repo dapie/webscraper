@@ -3,6 +3,7 @@ import './App.css';
 import MainPage from './MainPage';
 import ListBlock from './ListBlock';
 import AddPage from './AddPage';
+/*global chrome*/
 
 class App extends React.Component {
   constructor(props){
@@ -11,7 +12,7 @@ class App extends React.Component {
       showAdd: false,
       editElement: undefined,
       elements: [],
-      currentSite: "site",
+      currentSite: undefined,
       parent: undefined
     }
 
@@ -25,11 +26,15 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const oldElements = localStorage.getItem(this.state.currentSite)
-    if(oldElements !== null)
-      this.setState({
-        elements: JSON.parse(oldElements)
-      })
+    chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
+        let tmp = document.createElement ('a');
+        tmp.href = tabs[0].url;
+        const oldElements = localStorage.getItem(tmp.hostname)
+        this.setState({
+          elements: oldElements ? JSON.parse(oldElements) : [],
+          currentSite: tmp.hostname
+        })
+    });
   }
 
   handleToggleAddClick(){
@@ -142,6 +147,7 @@ class App extends React.Component {
             onBackClick={this.handleBackClick}
             onScrapClick={this.handleScrapClick}
             parent={this.state.parent}
+            currentSite={this.state.currentSite}
           />
         }
         {this.state.showAdd &&

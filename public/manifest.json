@@ -9,6 +9,18 @@
     "default_popup": "index.html",
     "default_title": "Open the popup"
   },
+  "devtools_page": "index.html",
+  "background":{
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js":["content.js"],
+      "css":["hover.css"]
+    }
+  ],
   "icons": {
     "16": "icon16.png",
     "32": "icon32.png",
@@ -20,6 +32,6 @@
   },
   "content_security_policy": "script-src 'self' 'sha256-XSZoPF6vJhDUU97e1L5IFbyL2hR1oQP9Zsli/Mv6acM='; object-src 'self'",
   "permissions": [
-    
+    "contextMenus", "tabs", "<all_urls>"
   ]
 }

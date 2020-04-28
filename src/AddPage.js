@@ -1,5 +1,5 @@
 import React from 'react';
-
+/*global chrome*/
 import crossImage from './icons/cross.svg';
 import plusImage from './icons/plus.svg';
 import cursorImage from './icons/cursor.svg';
@@ -15,7 +15,7 @@ class AddPage extends React.Component{
 			newAdd: {
 				title: "",
 				type: "element",
-				selectArr: {},
+				selectArr: undefined,
 				parent: undefined
 			},
 			viewSelected: false,
@@ -40,9 +40,27 @@ class AddPage extends React.Component{
 		this.setState({
 			newAdd
 		})
-  }
+		chrome.runtime.onMessage.addListener((request) =>
+			this.handleSelect(JSON.parse(request.resArr))
+		)
+	}
+	  
+	handleSelect(array){
+		this.setState(prevState => ({
+			newAdd: {
+				...prevState.newAdd, 
+				selectArr: array
+			}
+		}))
+	}
 
 	handleViewClick(){
+		const viewSelected = !this.state.viewSelected
+		const arr = this.state.newAdd.selectArr
+		chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+			var activeTab = tabs[0];
+			chrome.tabs.sendMessage(activeTab.id, {"message": "show", "body": {viewSelected, arr}});
+		});
 		this.setState(prevState => ({
 			viewSelected: !prevState.viewSelected,
 			selectingElements: false
@@ -50,6 +68,11 @@ class AddPage extends React.Component{
 	}
 
 	handleSelectClick(){
+		const selectingElements = !this.state.selectingElements
+		chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+			var activeTab = tabs[0];
+			chrome.tabs.sendMessage(activeTab.id, {"message": "start", "body": selectingElements});
+		});
 		this.setState(prevState => ({
 			selectingElements: !prevState.selectingElements,
 			viewSelected: false
@@ -57,7 +80,15 @@ class AddPage extends React.Component{
 	}
 
 	handleDeleteClick(){
+		chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+			var activeTab = tabs[0];
+			chrome.tabs.sendMessage(activeTab.id, {"message": "show", "body": {viewSelected: false}});
+		});
 		this.setState(prevState => ({
+			newAdd: {
+				...prevState.newAdd,
+				selectArr: undefined,
+			},
 			selectingElements: false,
 			viewSelected: false
 		}))
@@ -117,18 +148,18 @@ class AddPage extends React.Component{
 					<input type="text" maxLength="12" value={newAdd.title} onChange={this.handleNameInputChange}/>
 					<label>Выбор</label>
 					<div className="select-block">
-						<input type="text" disabled value={"Пусто"}/>
+						<input type="text" disabled value={newAdd.selectArr ? newAdd.selectArr.localName + "." + newAdd.selectArr.class : "Пусто" }/>
 						<button className="button green" onClick={this.handleSelectClick}>
 							<div className="icon">
 								<img alt="" src={selectingElements ? checkmarkImage : cursorImage}/>
 							</div>
 						</button>
-						<button className="button blue" onClick={this.handleViewClick}>
+						<button className={newAdd.selectArr ? "button blue" : "button blue disabled"} onClick={ newAdd.selectArr ? this.handleViewClick : ""}>
 							<div className="icon">
 								<img alt="" src={viewSelected ? eyeoffImage : eyeImage}/>
 							</div>
 						</button>
-						<button className="button red" onClick={this.handleClearClick}>
+						<button className="button red" onClick={this.handleDeleteClick}>
 							<div className="icon">
 								<img alt="" src={trashImage}/>
 							</div>

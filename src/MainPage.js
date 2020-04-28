@@ -30,12 +30,12 @@ class MainPage extends React.Component{
 	}
 
 	render(){
-		const {listItems, parent} = this.props
+		const {listItems, parent, currentSite} = this.props
 		return(
 			<div className="page">
 				<div className="page-head">
 					<h1 className="title">Элементы</h1>
-					<p className="description">{parent ? parent.type.toUpperCase() + " " + parent.title : "somesitefornews.com"}</p>
+					<p className="description">{parent ? parent.type.toUpperCase() + " " + parent.title : currentSite}</p>
 				</div>
 				<div className={listItems.length > 0 ? "list" : "list empty"}>
 					{listItems.length > 0 && listItems}
